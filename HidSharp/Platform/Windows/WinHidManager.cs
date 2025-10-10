@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
+using AOT;
 using HidSharp.Experimental;
 using HidSharp.Utility;
 using Microsoft.Win32;
@@ -271,7 +272,7 @@ namespace HidSharp.Platform.Windows
         {
             RunAssert(NativeMethods.UnregisterDeviceNotification(handle), "HidSharp UnregisterDeviceNotification failed.");
         }
-
+        [MonoPInvokeCallback(typeof(NativeMethods.WindowProc))]
         unsafe static IntPtr DeviceMonitorWindowProc(IntPtr window, uint message, IntPtr wParam, IntPtr lParam)
         {
             if (message == NativeMethods.WM_DEVICECHANGE)
