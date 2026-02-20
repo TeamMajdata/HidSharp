@@ -371,6 +371,9 @@ namespace HidSharp.Platform.MacOS
         [DllImport(CoreFoundation, EntryPoint = "CFRunLoopStop")]
         public static extern void CFRunLoopStop(IntPtr runLoop);
 
+        [DllImport(CoreFoundation, EntryPoint = "CFRunLoopWakeUp")]
+        public static extern void CFRunLoopWakeUp(IntPtr runLoop);
+
         [DllImport(CoreFoundation, EntryPoint = "CFRelease")]
         public static extern void CFRelease(IntPtr obj);
 

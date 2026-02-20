@@ -18,11 +18,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace HidSharp.Platform.MacOS
 {
-    sealed class MacHidManager : HidManager
+    public sealed class MacHidManager : HidManager
     {
+        static IntPtr _runLoop;
+
+        public static void QuitThisBs()
+        {
+            var runLoop = Interlocked.Exchange(ref _runLoop, IntPtr.Zero);
+            if (runLoop != IntPtr.Zero)
+            {
+                NativeMethods.CFRunLoopStop(runLoop);
+                NativeMethods.CFRunLoopWakeUp(runLoop);
+            }
+        }
+
         private protected override SystemEvents.EventManager CreateEventManager()
         {
             return new SystemEvents.MacOSEventManager();
@@ -45,6 +58,7 @@ namespace HidSharp.Platform.MacOS
 
                     var runLoop = NativeMethods.CFRunLoopGetCurrent();
                     NativeMethods.CFRetain(runLoop);
+                    Interlocked.Exchange(ref _runLoop, runLoop);
                     NativeMethods.IOHIDManagerScheduleWithRunLoop(manager, runLoop, NativeMethods.kCFRunLoopDefaultMode);
                     try
                     {
@@ -53,6 +67,7 @@ namespace HidSharp.Platform.MacOS
                     }
                     finally
                     {
+                        Interlocked.CompareExchange(ref _runLoop, IntPtr.Zero, runLoop);
                         NativeMethods.IOHIDManagerUnscheduleFromRunLoop(manager, runLoop, NativeMethods.kCFRunLoopDefaultMode);
                         NativeMethods.CFRelease(runLoop);
                     }
