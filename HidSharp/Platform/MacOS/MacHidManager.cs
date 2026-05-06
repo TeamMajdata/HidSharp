@@ -15,6 +15,7 @@
    under the License. */
 #endregion
 
+using AOT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace HidSharp.Platform.MacOS
                 }
             }
         }
-
+        [MonoPInvokeCallback(typeof(NativeMethods.IOHIDDeviceCallback))]
         static void DevicesChangedCallback(IntPtr context, NativeMethods.IOReturn result, IntPtr sender, IntPtr device)
         {
             DeviceList.Local.RaiseChanged();
