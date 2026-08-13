@@ -189,6 +189,14 @@ namespace HidSharp.Platform.Linux
         public const int IOC_SIZESHIFT = IOC_TYPESHIFT + IOC_TYPEBITS;
         public const int IOC_DIRSHIFT = IOC_SIZESHIFT + IOC_SIZEBITS;
 
+        public const int TIOCM_DTR = 0x002;
+        public const int TIOCM_RTS = 0x004;
+
+        public const nuint TIOCM_GET = 0x5415;
+        public const nuint TIOCM_BIS = 0x5416;
+        public const nuint TIOCM_BIC = 0x5417;
+        public const nuint TIOCM_SET = 0x5418;
+
         public static UIntPtr IOC(int dir, int type, int nr, int size)
         {
             // Make sure to cast this to uint. We do NOT want this casted from int...

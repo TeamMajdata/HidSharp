@@ -244,6 +244,8 @@ namespace HidSharp.Platform.Linux
                         int dataBits = _ser.DataBits;
                         var parity = _ser.Parity;
                         int stopBits = _ser.StopBits;
+                        var rtsEnable = _ser.RtsEnable;
+                        var dtrEnable = _ser.DtrEnable;
 
                         ret = NativeMethods.retry(() => NativeMethods.cfsetspeed(ref _newSettings, (uint)Math.Max(1, baudRate)));
                         if (ret < 0) { throw new IOException("cfsetspeed failed."); }
@@ -266,6 +268,18 @@ namespace HidSharp.Platform.Linux
 
                         ret = NativeMethods.retry(() => NativeMethods.tcflush(handle, NativeMethods.TCIFLUSH));
                         if (ret < 0) { throw new IOException("tcflush failed."); }
+
+                        ret = NativeMethods.retry(() =>
+                        {
+                            return NativeMethods.ioctl(handle, rtsEnable ? NativeMethods.TIOCM_BIS : NativeMethods.TIOCM_BIC, (IntPtr)NativeMethods.TIOCM_RTS);
+                        });
+                        if (ret < 0) { throw new IOException("Set RTS failed."); }
+
+                        ret = NativeMethods.retry(() =>
+                        {
+                            return NativeMethods.ioctl(handle, dtrEnable ? NativeMethods.TIOCM_BIS : NativeMethods.TIOCM_BIC, (IntPtr)NativeMethods.TIOCM_DTR);
+                        });
+                        if (ret < 0) { throw new IOException("Set DTR failed."); }
 
                         _settingsChanged = false;
                     }
@@ -308,15 +322,15 @@ namespace HidSharp.Platform.Linux
             get;
             set;
         }
-        public sealed override bool DtrEnable 
-        { 
-            get => throw new NotImplementedException(); 
-            set => throw new NotImplementedException(); 
+        public sealed override bool DtrEnable
+        {
+            get => _ser.DtrEnable;
+            set => _ser.SetDtrEnable(value, _lock, ref _settingsChanged);
         }
-        public sealed override bool RtsEnable 
-        { 
-            get => throw new NotImplementedException(); 
-            set => throw new NotImplementedException(); 
+        public sealed override bool RtsEnable
+        {
+            get => _ser.RtsEnable;
+            set => _ser.SetRtsEnable(value, _lock, ref _settingsChanged);
         }
     }
 }
