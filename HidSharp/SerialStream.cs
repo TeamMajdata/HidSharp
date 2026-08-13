@@ -15,6 +15,7 @@
    under the License. */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -113,6 +114,18 @@ namespace HidSharp
         }
 
         public abstract int StopBits
+        {
+            get;
+            set;
+        }
+
+        public abstract bool DtrEnable
+        {
+            get;
+            set;
+        }
+
+        public abstract bool RtsEnable
         {
             get;
             set;

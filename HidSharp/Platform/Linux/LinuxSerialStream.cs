@@ -308,5 +308,15 @@ namespace HidSharp.Platform.Linux
             get;
             set;
         }
+        public sealed override bool DtrEnable 
+        { 
+            get => throw new NotImplementedException(); 
+            set => throw new NotImplementedException(); 
+        }
+        public sealed override bool RtsEnable 
+        { 
+            get => throw new NotImplementedException(); 
+            set => throw new NotImplementedException(); 
+        }
     }
 }

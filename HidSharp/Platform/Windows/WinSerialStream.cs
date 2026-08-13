@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 
 namespace HidSharp.Platform.Windows
 {
@@ -178,12 +179,19 @@ namespace HidSharp.Platform.Windows
                 int dataBits = _ser.DataBits;
                 var parity = _ser.Parity;
                 int stopBits = _ser.StopBits;
+                var dtrEnable = _ser.DtrEnable;
+                var rtsEnable = _ser.RtsEnable;
 
                 SetDcbDefaults(ref dcb);
                 dcb.BaudRate = checked((uint)baudRate);
                 dcb.ByteSize = checked((byte)_ser.DataBits);
                 dcb.Parity = parity == SerialParity.Even ? NativeMethods.EVENPARITY : parity == SerialParity.Odd ? NativeMethods.ODDPARITY : NativeMethods.NOPARITY;
                 dcb.StopBits = stopBits == 2 ? NativeMethods.TWOSTOPBITS : NativeMethods.ONESTOPBIT;
+                // Set DtrEnable
+                dcb.fDtrControl = dtrEnable ? 0x01U : 0x00U;
+                // Set RtsEnable
+                dcb.fRtsControl = rtsEnable ? 0x01U : 0x00U;
+
                 if (!NativeMethods.SetCommState(_handle, ref dcb))
                 {
                     int hr = Marshal.GetHRForLastWin32Error();
@@ -221,6 +229,16 @@ namespace HidSharp.Platform.Windows
         {
             get { return _ser.StopBits; }
             set { _ser.SetStopBits(value, _lock, ref _settingsChanged); }
+        }
+        public sealed override bool DtrEnable 
+        { 
+            get => _ser.DtrEnable; 
+            set => _ser.SetDtrEnable(value, _lock, ref _settingsChanged); 
+        }
+        public sealed override bool RtsEnable 
+        { 
+            get => _ser.RtsEnable;
+            set => _ser.SetRtsEnable(value, _lock, ref _settingsChanged); 
         }
 
         public sealed override int ReadTimeout

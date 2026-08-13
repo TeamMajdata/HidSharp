@@ -16,6 +16,7 @@
 #endregion
 
 using System;
+using System.IO.Ports;
 
 namespace HidSharp
 {
@@ -23,13 +24,21 @@ namespace HidSharp
     {
         public static readonly SerialSettings Default = new SerialSettings()
         {
-            BaudRate = 9600, DataBits = 8, Parity = SerialParity.None, StopBits = 1
+            BaudRate = 9600, 
+            DataBits = 8, 
+            Parity = SerialParity.None, 
+            StopBits = 1, 
+            RtsEnable = false, 
+            DtrEnable = false
         };
 
         public int BaudRate;
         public int DataBits;
         public SerialParity Parity;
         public int StopBits;
+
+        public bool DtrEnable;
+        public bool RtsEnable;
 
         public void SetBaudRate(int baudRate, object @lock, ref bool settingsChanged)
         {
@@ -74,6 +83,32 @@ namespace HidSharp
                 if (StopBits == stopBits) { return; }
 //Console.WriteLine(string.Format("Stop Bits {0} -> {1}", StopBits, stopBits));
                 StopBits = stopBits; settingsChanged = true;
+            }
+        }
+
+        public void SetDtrEnable(bool dtrEnable, object @lock, ref bool settingsChanged)
+        {
+            lock (@lock)
+            {
+                if (DtrEnable == dtrEnable) 
+                { 
+                    return; 
+                }
+                DtrEnable = dtrEnable;
+                settingsChanged = true;
+            }
+        }
+
+        public void SetRtsEnable(bool rtsEnable, object @lock, ref bool settingsChanged)
+        {
+            lock (@lock)
+            {
+                if (RtsEnable == rtsEnable)
+                {
+                    return;
+                }
+                RtsEnable = rtsEnable;
+                settingsChanged = true;
             }
         }
     }
