@@ -19,7 +19,6 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 
 namespace HidSharp.Platform.Windows
 {
