@@ -249,7 +249,7 @@ namespace HidSharp.Platform.Linux
         [DllImport(libc, SetLastError = true)]
         public static extern int ioctl(int filedes, UIntPtr command);
         #endregion
-        #endregion
+#endregion
 
         #region termios
         public static readonly UIntPtr TIOCEXCL = (UIntPtr)0x540c;
