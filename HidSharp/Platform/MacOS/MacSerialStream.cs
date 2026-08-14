@@ -243,6 +243,8 @@ namespace HidSharp.Platform.MacOS
                         int dataBits = _ser.DataBits;
                         var parity = _ser.Parity;
                         int stopBits = _ser.StopBits;
+                        var rtsEnable = _ser.RtsEnable;
+                        var dtrEnable = _ser.DtrEnable;
 
                         ret = NativeMethods.retry(() => NativeMethods.cfsetspeed(ref _newSettings, (UIntPtr)Math.Max(1, baudRate)));
                         if (ret < 0) { throw new IOException("cfsetspeed failed."); }
@@ -265,6 +267,20 @@ namespace HidSharp.Platform.MacOS
 
                         ret = NativeMethods.retry(() => NativeMethods.tcflush(handle, NativeMethods.TCIFLUSH));
                         if (ret < 0) { throw new IOException("tcflush failed."); }
+
+                        ret = NativeMethods.retry(() =>
+                        {
+                            var value = NativeMethods.TIOCM_RTS;
+                            return NativeMethods.ioctl(handle, rtsEnable ? NativeMethods.TIOCM_BIS : NativeMethods.TIOCM_BIC, out value);
+                        });
+                        if (ret < 0) { throw new IOException("Set RTS failed."); }
+
+                        ret = NativeMethods.retry(() =>
+                        {
+                            var value = NativeMethods.TIOCM_DTR;
+                            return NativeMethods.ioctl(handle, dtrEnable ? NativeMethods.TIOCM_BIS : NativeMethods.TIOCM_BIC, out value);
+                        });
+                        if (ret < 0) { throw new IOException("Set DTR failed."); }
 
                         _settingsChanged = false;
                     }

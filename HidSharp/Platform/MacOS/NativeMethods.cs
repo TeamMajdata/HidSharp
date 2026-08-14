@@ -83,6 +83,16 @@ namespace HidSharp.Platform.MacOS
         public const uint IOC_OUT = 0x40000000;
         public const uint IOC_IN = 0x80000000;
         public const uint IOC_INOUT = IOC_IN | IOC_OUT;
+
+        public const uint TIOCM_DTR = 0x002;
+        public const uint TIOCM_RTS = 0x004;
+
+        public const nuint TIOCM_GET = 0x4004746A;
+        public const nuint TIOCM_BIS = 0x8004746C;
+        public const nuint TIOCM_BIC = 0x8004746B;
+        public const nuint TIOCM_SET = 0x8004746D;
+
+
         static UIntPtr _IOC(uint inout, byte group, byte num, int len) { return (UIntPtr)(inout | (uint)len << 16 | (uint)group << 8 | (uint)num); }
         static UIntPtr _IO(byte group, byte num) { return _IOC(IOC_VOID, group, num, 0); }
 
@@ -517,6 +527,9 @@ namespace HidSharp.Platform.MacOS
 
         [DllImport(libc, SetLastError = true, EntryPoint = "ioctl")]
         public static extern int ioctl(int filedes, UIntPtr request);
+
+        [DllImport(libc, SetLastError = true, EntryPoint = "ioctl")]
+        public static extern int ioctl(int filedes, UIntPtr request, out uint value);
 
         [DllImport(libc, SetLastError = true, EntryPoint = "close")]
         public static extern int close(int filedes); // < 0 if failed
