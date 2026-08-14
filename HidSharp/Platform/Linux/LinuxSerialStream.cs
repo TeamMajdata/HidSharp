@@ -271,13 +271,15 @@ namespace HidSharp.Platform.Linux
 
                         ret = NativeMethods.retry(() =>
                         {
-                            return NativeMethods.ioctl(handle, rtsEnable ? NativeMethods.TIOCM_BIS : NativeMethods.TIOCM_BIC, (IntPtr)NativeMethods.TIOCM_RTS);
+                            var value = NativeMethods.TIOCM_RTS;
+                            return NativeMethods.ioctl(handle, rtsEnable ? NativeMethods.TIOCM_BIS : NativeMethods.TIOCM_BIC, out value);
                         });
                         if (ret < 0) { throw new IOException("Set RTS failed."); }
 
                         ret = NativeMethods.retry(() =>
                         {
-                            return NativeMethods.ioctl(handle, dtrEnable ? NativeMethods.TIOCM_BIS : NativeMethods.TIOCM_BIC, (IntPtr)NativeMethods.TIOCM_DTR);
+                            var value = NativeMethods.TIOCM_DTR;
+                            return NativeMethods.ioctl(handle, dtrEnable ? NativeMethods.TIOCM_BIS : NativeMethods.TIOCM_BIC, out value);
                         });
                         if (ret < 0) { throw new IOException("Set DTR failed."); }
 

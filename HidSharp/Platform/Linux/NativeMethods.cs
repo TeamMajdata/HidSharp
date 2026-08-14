@@ -189,8 +189,8 @@ namespace HidSharp.Platform.Linux
         public const int IOC_SIZESHIFT = IOC_TYPESHIFT + IOC_TYPEBITS;
         public const int IOC_DIRSHIFT = IOC_SIZESHIFT + IOC_SIZEBITS;
 
-        public const int TIOCM_DTR = 0x002;
-        public const int TIOCM_RTS = 0x004;
+        public const uint TIOCM_DTR = 0x002;
+        public const uint TIOCM_RTS = 0x004;
 
         public const nuint TIOCM_GET = 0x5415;
         public const nuint TIOCM_BIS = 0x5416;
