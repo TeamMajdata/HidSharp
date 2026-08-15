@@ -147,7 +147,7 @@ namespace HidSharp
 
                             if (!exclusiveMutex.TryLock(timeout, out exclusiveLock))
                             {
-                                throw DeviceException.CreateIOException(_device, "The device is in use.", Utility.HResult.SharingViolation);
+                                throw DeviceException.CreateIOException(_device, "The device is in use.", unchecked((int)0x80070020));
                             }
                         }
                     }
@@ -242,7 +242,7 @@ namespace HidSharp
             }
         }
 
-        static void Close<T>(ref T obj) where T : class, IDisposable
+        static void Close<T>(ref T? obj) where T : class, IDisposable
         {
             if (obj != null) { obj.Dispose(); obj = null; }
         }
