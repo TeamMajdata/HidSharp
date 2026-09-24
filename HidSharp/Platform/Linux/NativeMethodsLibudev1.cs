@@ -44,10 +44,10 @@ namespace HidSharp.Platform.Linux
         }
 
         [DllImport(libudev, EntryPoint = "udev_unref")]
-        static extern void native_udev_unref(IntPtr udev);
-        public override void udev_unref(IntPtr udev)
+        static extern IntPtr native_udev_unref(IntPtr udev);
+        public override IntPtr udev_unref(IntPtr udev)
         {
-            native_udev_unref(udev);
+            return native_udev_unref(udev);
         }
 
         [DllImport(libudev, EntryPoint = "udev_monitor_new_from_netlink")]
@@ -59,10 +59,10 @@ namespace HidSharp.Platform.Linux
         }
 
         [DllImport(libudev, EntryPoint = "udev_monitor_unref")]
-        static extern void native_udev_monitor_unref(IntPtr monitor);
-        public override void udev_monitor_unref(IntPtr monitor)
+        static extern IntPtr native_udev_monitor_unref(IntPtr monitor);
+        public override IntPtr udev_monitor_unref(IntPtr monitor)
         {
-            native_udev_monitor_unref(monitor);
+            return native_udev_monitor_unref(monitor);
         }
 
         [DllImport(libudev, EntryPoint = "udev_monitor_filter_add_match_subsystem_devtype")]
@@ -110,10 +110,10 @@ namespace HidSharp.Platform.Linux
         }
 
         [DllImport(libudev, EntryPoint = "udev_enumerate_unref")]
-        static extern void native_udev_enumerate_unref(IntPtr enumerate);
-        public override void udev_enumerate_unref(IntPtr enumerate)
+        static extern IntPtr native_udev_enumerate_unref(IntPtr enumerate);
+        public override IntPtr udev_enumerate_unref(IntPtr enumerate)
         {
-            native_udev_enumerate_unref(enumerate);
+            return native_udev_enumerate_unref(enumerate);
         }
 
         [DllImport(libudev, EntryPoint = "udev_enumerate_add_match_subsystem")]
@@ -169,10 +169,10 @@ namespace HidSharp.Platform.Linux
         }
 
         [DllImport(libudev, EntryPoint = "udev_device_unref")]
-        static extern void native_udev_device_unref(IntPtr device);
-        public override void udev_device_unref(IntPtr device)
+        static extern IntPtr native_udev_device_unref(IntPtr device);
+        public override IntPtr udev_device_unref(IntPtr device)
         {
-            native_udev_device_unref(device);
+            return native_udev_device_unref(device);
         }
 
         [DllImport(libudev, EntryPoint = "udev_device_get_devnode")]
