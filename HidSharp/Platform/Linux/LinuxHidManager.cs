@@ -32,6 +32,30 @@ namespace HidSharp.Platform.Linux
 
         protected override void Run(Action readyCallback)
         {
+#if ENABLE_IL2CPP
+            // Avoid libudev monitor ownership and marshaling issues on IL2CPP.
+            // Poll paths instead of receiving native devices that must be unreferenced.
+            var deviceKeys = new HashSet<object>(GetHidDeviceKeys().Concat(GetSerialDeviceKeys()));
+            var currentKeys = new HashSet<object>();
+            readyCallback();
+            while (true)
+            {
+                try
+                {
+                    currentKeys.UnionWith(GetHidDeviceKeys().Concat(GetSerialDeviceKeys()));
+                    System.Threading.Thread.Sleep(1000);
+                    if (!deviceKeys.SetEquals(currentKeys))
+                    {
+                        deviceKeys = currentKeys;
+                        DeviceList.Local.RaiseChanged();
+                    }
+                }
+                finally
+                {
+                    currentKeys.Clear();
+                }
+            }
+#else
             IntPtr udev = NativeMethodsLibudev.Instance.udev_new();
             RunAssert(udev != IntPtr.Zero, "HidSharp udev_new failed.");
 
@@ -88,6 +112,7 @@ namespace HidSharp.Platform.Linux
             {
                 NativeMethodsLibudev.Instance.udev_unref(udev);
             }
+#endif
         }
 
         protected override object[] GetBleDeviceKeys()
@@ -117,6 +142,16 @@ namespace HidSharp.Platform.Linux
 
         object[] GetDeviceKeys(string subsystem)
         {
+#if ENABLE_IL2CPP
+            try
+            {
+                return Directory.GetDirectories(Path.Combine("/sys/class", subsystem)).Cast<object>().ToArray();
+            }
+            catch
+            {
+                return new object[0];
+            }
+#else
             var paths = new List<string>();
 
             IntPtr udev = NativeMethodsLibudev.Instance.udev_new();
@@ -154,6 +189,7 @@ namespace HidSharp.Platform.Linux
             }
 
             return paths.Cast<object>().ToArray();
+#endif
         }
 
         protected override bool TryCreateBleDevice(object key, out Device device)
